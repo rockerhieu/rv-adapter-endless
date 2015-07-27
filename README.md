@@ -17,18 +17,20 @@ To use `EndlessRecyclerViewAdapter` you need to create a subclass that will cont
 When the loading view is shown, it will send a request to load more data via the interface `RequestToLoadMoreListener`. After loading the data, you can let the adapter know via `onDataReady()` method.
 
 ```java
-Adapter adapter = new SimpleStringAdapter(null);
+OriginalAdapter adapter = new OriginalAdapter();
 EndlessRecyclerViewAdapter endlessRecyclerViewAdapter = new EndlessRecyclerViewAdapter(this, adapter, new RequestToLoadMoreListener() {
    @Override
    public void onLoadMoreRequested() {
       loadMoreData(new OnSuccess() {
         void onSuccess(List<Item> items) {
           adapter.append(items);
+          // notify that the data is ready, and the adapter SHOULD continue to load more
           endlessRecyclerViewAdapter.onDataReady(true);
         }
       }, new OnError() {
         void onError() {
-          endlessRecyclerViewAdapter.onDataReady(true);
+          // notify that the data is ready, and the adapter SHOULD NOT continue to load more
+          endlessRecyclerViewAdapter.onDataReady(false);
         }
       )
    }
