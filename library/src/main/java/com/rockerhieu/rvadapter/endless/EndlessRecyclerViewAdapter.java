@@ -90,9 +90,11 @@ public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (getItemViewType(position) == TYPE_PENDING && !dataPending.get()) {
-            dataPending.set(true);
-            requestToLoadMoreListener.onLoadMoreRequested();
+        if (getItemViewType(position) == TYPE_PENDING) {
+            if (!dataPending.get()) {
+                dataPending.set(true);
+                requestToLoadMoreListener.onLoadMoreRequested();
+            }
         } else {
             super.onBindViewHolder(holder, position);
         }
