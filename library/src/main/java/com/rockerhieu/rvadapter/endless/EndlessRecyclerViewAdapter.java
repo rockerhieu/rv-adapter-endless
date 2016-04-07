@@ -83,6 +83,9 @@ public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
         keepOnAppending.set(newValue);
         if (shouldNotifyAdapter) {
             getWrappedAdapter().notifyDataSetChanged();
+        } else {
+            // Notify only pendingView to show\hide self
+            notifyItemChanged(getWrappedAdapter().getItemCount());
         }
     }
 
