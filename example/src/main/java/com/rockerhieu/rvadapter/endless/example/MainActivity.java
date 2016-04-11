@@ -22,7 +22,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+
 import com.rockerhieu.rvadapter.endless.EndlessRecyclerViewAdapter;
 import com.rockerhieu.rvadapter.endless.example.adapter.SimpleStringAdapter;
 import com.rockerhieu.rvadapter.endless.example.decorator.DividerItemDecoration;
@@ -43,8 +45,13 @@ public class MainActivity extends Activity implements EndlessRecyclerViewAdapter
         final RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setHasFixedSize(true);
+
         adapter = new SimpleStringAdapter(null);
-        endlessRecyclerViewAdapter = new EndlessRecyclerViewAdapter(this, adapter, this);
+        endlessRecyclerViewAdapter = new EndlessRecyclerViewAdapter(adapter, this);
+
+        // Optional! If you really need to do something on your pending view's holder
+        endlessRecyclerViewAdapter.setPendingViewHolder(new PendingViewHolder(LayoutInflater.from(this).inflate(R.layout.item_loading, rv, false)));
+
         rv.setAdapter(endlessRecyclerViewAdapter);
         rv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
     }

@@ -1,10 +1,10 @@
 package com.rockerhieu.rvadapter.endless;
 
-import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.rockerhieu.rvadapter.RecyclerViewAdapterWrapper;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,28 +16,37 @@ import static android.support.v7.widget.RecyclerView.ViewHolder;
  * @author rockerhieu on 7/6/15.
  */
 public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
+
     public static final int TYPE_PENDING = 999;
-    private final Context context;
-    private final int pendingViewResId;
     private AtomicBoolean keepOnAppending;
     private AtomicBoolean dataPending;
     private RequestToLoadMoreListener requestToLoadMoreListener;
 
-    public EndlessRecyclerViewAdapter(Context context, Adapter wrapped, RequestToLoadMoreListener requestToLoadMoreListener, @LayoutRes int pendingViewResId, boolean keepOnAppending) {
+    private boolean shouldNotifyAdapter = false;
+    private ViewHolder pendingViewHolder;
+    private int pendingViewId = R.layout.item_loading;
+
+    public EndlessRecyclerViewAdapter(Adapter wrapped, RequestToLoadMoreListener requestToLoadMoreListener) {
+        this(wrapped, requestToLoadMoreListener, true);
+    }
+
+    public EndlessRecyclerViewAdapter(Adapter wrapped, RequestToLoadMoreListener requestToLoadMoreListener, boolean keepOnAppending) {
         super(wrapped);
-        this.context = context;
+
         this.requestToLoadMoreListener = requestToLoadMoreListener;
-        this.pendingViewResId = pendingViewResId;
         this.keepOnAppending = new AtomicBoolean(keepOnAppending);
         dataPending = new AtomicBoolean(false);
     }
 
-    public EndlessRecyclerViewAdapter(Context context, Adapter wrapped, RequestToLoadMoreListener requestToLoadMoreListener) {
-        this(context, wrapped, requestToLoadMoreListener, R.layout.item_loading, true);
+    public void setPendingViewId(@LayoutRes int layoutId) {
+        this.pendingViewId = layoutId;
     }
 
-    private void stopAppending() {
-        setKeepOnAppending(false);
+    /**
+     * To have more control over pending view, create your own pendingViewHolder and pass it here
+     */
+    public void setPendingViewHolder(ViewHolder holder) {
+        this.pendingViewHolder = holder;
     }
 
     /**
@@ -50,21 +59,41 @@ public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
         setKeepOnAppending(keepOnAppending);
     }
 
-    private void setKeepOnAppending(boolean newValue) {
-        keepOnAppending.set(newValue);
-        getWrappedAdapter().notifyDataSetChanged();
+    /**
+     * Instead of calling notifyDataSetChanged, can be called notifyInsert or notifyRemove
+     * This flag is false as default, you need to activate
+     * if you do not intent to notify adapter yourself
+     *
+     * @param enable
+     */
+    public void notifyAutomatically(boolean enable) {
+        this.shouldNotifyAdapter = enable;
     }
 
-    /**
-     *
-     */
     public void restartAppending() {
         dataPending.set(false);
         setKeepOnAppending(true);
     }
 
-    private View getPendingView(ViewGroup viewGroup) {
-        return LayoutInflater.from(context).inflate(pendingViewResId, viewGroup, false);
+    private void stopAppending() {
+        setKeepOnAppending(false);
+    }
+
+    private void setKeepOnAppending(boolean newValue) {
+        keepOnAppending.set(newValue);
+        if (shouldNotifyAdapter) {
+            getWrappedAdapter().notifyDataSetChanged();
+        } else {
+            // Notify only pendingView to show\hide self
+            notifyItemChanged(getWrappedAdapter().getItemCount());
+        }
+    }
+
+    private ViewHolder getPendingViewHolder(ViewGroup parent) {
+        if (pendingViewHolder == null) {
+            pendingViewHolder = new PendingViewHolder(LayoutInflater.from(parent.getContext()).inflate(pendingViewId, parent, false));
+        }
+        return pendingViewHolder;
     }
 
     @Override
@@ -83,7 +112,7 @@ public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_PENDING) {
-            return new PendingViewHolder(getPendingView(parent));
+            return getPendingViewHolder(parent);
         }
         return super.onCreateViewHolder(parent, viewType);
     }
@@ -113,4 +142,5 @@ public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
             super(itemView);
         }
     }
+
 }
