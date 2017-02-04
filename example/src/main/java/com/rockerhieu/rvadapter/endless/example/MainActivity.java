@@ -44,7 +44,7 @@ public class MainActivity extends Activity implements EndlessRecyclerViewAdapter
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setHasFixedSize(true);
         adapter = new SimpleStringAdapter(null);
-        endlessRecyclerViewAdapter = new EndlessRecyclerViewAdapter(this, adapter, this);
+        endlessRecyclerViewAdapter = new EndlessRecyclerViewAdapter(adapter, this);
         rv.setAdapter(endlessRecyclerViewAdapter);
         rv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
     }
