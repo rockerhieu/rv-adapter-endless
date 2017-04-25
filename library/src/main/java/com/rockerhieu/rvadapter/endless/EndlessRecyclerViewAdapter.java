@@ -41,6 +41,9 @@ public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
      * If not set, default is R.layout.item_loading
      */
     public void setPendingViewId(@LayoutRes int layoutId) {
+        if (pendingViewHolder != null) {
+            throw new IllegalStateException("Cannot change pendingViewId once ViewHolder is created.");
+        }
         pendingViewId = layoutId;
     }
 
@@ -49,6 +52,9 @@ public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
      * {@linkplain EndlessRecyclerViewAdapter#setPendingViewId(int)}
      */
     public void setPendingViewHolder(ViewHolder holder) {
+        if (pendingViewHolder != null) {
+            throw new IllegalStateException("Cannot change pendingViewHolder once it is created.");
+        }
         pendingViewHolder = holder;
     }
 
