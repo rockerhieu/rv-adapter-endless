@@ -43,8 +43,13 @@ public class MainActivity extends Activity implements EndlessRecyclerViewAdapter
         final RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setHasFixedSize(true);
+
         adapter = new SimpleStringAdapter(null);
         endlessRecyclerViewAdapter = new EndlessRecyclerViewAdapter(adapter, this);
+
+        // Optional
+        endlessRecyclerViewAdapter.setPendingViewId(R.layout.custom_pending_view);
+
         rv.setAdapter(endlessRecyclerViewAdapter);
         rv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
     }
