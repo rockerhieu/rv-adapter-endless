@@ -3,7 +3,10 @@ branches:
     - master
 
 language: android
-jdk: oraclejdk7
+
+# installing Java 8 JDK is required to prevent getting "Unsupported major.minor version 52.0" error
+jdk:
+  - oraclejdk8
 env:
   global:
   - secure: HFrTJGqM13CLydBxYKVDVzxyxML8ivAdb0Q7WZsqF0Ou+mrin9+uj4tIc6fGo5SJaXRV5pLEXE5aXfzMqhdv80WBafe0n7aQLizlOJG2Z6PhYu8ojY7hjtVnYUtYj62uoP+Vh/YgWiAjPGZ3No3NSNmJ0noJkaFkDP0xyUAs6TE=
@@ -13,10 +16,11 @@ android:
   components:
   - tools
   - platform-tools
+  - tools
+  - build-tools-24.0.3
   - extra-android-support
   - extra-android-m2repository
-  - android-22
-  - build-tools-22.0.1
+  - android-24
 install:
   - ./gradlew dependencies
 

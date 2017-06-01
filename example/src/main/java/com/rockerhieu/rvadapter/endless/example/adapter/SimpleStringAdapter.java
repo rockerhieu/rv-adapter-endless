@@ -55,13 +55,13 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void appendItems(List<String> items) {
-        int count = getItemCount();
         mValues.addAll(items);
-        notifyItemRangeInserted(count, items.size());
+        notifyItemRangeInserted(getItemCount(), items.size());
     }
 
 
     public void clear() {
         mValues.clear();
+        notifyDataSetChanged();
     }
 }

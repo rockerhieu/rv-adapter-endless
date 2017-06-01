@@ -5,4 +5,8 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="AppTheme.Custom" parent="@style/Theme.AppCompat">
+        <item name="colorAccent">#FF9800</item>
+    </style>
+
 </resources>
