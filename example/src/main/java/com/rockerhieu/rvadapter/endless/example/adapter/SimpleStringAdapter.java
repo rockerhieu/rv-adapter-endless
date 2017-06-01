@@ -56,7 +56,7 @@ public class SimpleStringAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public void appendItems(List<String> items) {
         mValues.addAll(items);
-        notifyItemRangeInserted(getItemCount() + 1, items.size());
+        notifyItemRangeInserted(getItemCount(), items.size());
     }
 
 
